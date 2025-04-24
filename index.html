@@ -1,0 +1,29 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WASM Celsius to Fahrenheit</title>
+</head>
+<body>
+  <h1>Temperature Converter</h1>
+  <input id="celsius" type="number" placeholder="Celsius">
+  <button onclick="convert()">Convert</button>
+  <p id="result"></p>
+
+  <script>
+    let wasm;
+
+    fetch('temp_converter.wasm')
+      .then(response => response.arrayBuffer())
+      .then(bytes => WebAssembly.instantiate(bytes))
+      .then(obj => wasm = obj.instance.exports);
+
+    function convert() {
+      const c = parseFloat(document.getElementById('celsius').value);
+      const f = wasm.toFahrenheit(c);
+      document.getElementById('result').innerText = `${c}°C = ${f.toFixed(2)}°F`;
+    }
+  </script>
+</body>
+</html>
